@@ -2,6 +2,7 @@ package format
 
 import (
     "fmt"
+    "github.com/czuhajster/macspawn/internal/address"
 )
 
 type macAddressFormat string
@@ -12,6 +13,6 @@ const (
     SimpmeFormat macAddressFormat = "%02X%02X%02X%02X%02X%02X\n"
 )
 
-func PrintMAC(x *[6]uint8, format macAddressFormat) {
+func PrintMAC(x *address.MACAddress, format macAddressFormat) {
     fmt.Printf(string(format), x[0], x[1], x[2], x[3], x[4], x[5])
 }
