@@ -4,20 +4,20 @@ import (
     "math/rand"
 )
 
-type MACAddress [6]uint8
+type MACAddress [6]byte
 
-func GenerateOUI() *[3]uint8 {
-    var OUI [3]uint8
+func GenerateOUI() *[3]byte {
+    var OUI [3]byte
     for i := 0; i < 3; i++ {
-        OUI[i] = uint8(rand.Intn(255))
+        OUI[i] = byte(rand.Intn(255))
     }
     return &OUI
 }
 
-func GenerateNICSpecificBytes() *[3]uint8 {
-    var nicSpecificBytes [3]uint8
+func GenerateNICSpecificBytes() *[3]byte {
+    var nicSpecificBytes [3]byte
     for i := 0; i < 3; i++ {
-        nicSpecificBytes[i] = uint8(rand.Intn(255))
+        nicSpecificBytes[i] = byte(rand.Intn(255))
     }
     return &nicSpecificBytes
 }
