@@ -10,6 +10,8 @@ type MACAddress [6]byte
 const (
     localScopeBitmask byte = 2
     universalScopeBitmask byte = 253
+    unicastBitmask byte = 254
+    multicastBitmask byte = 1
 )
 
 func GenerateOUI() *[3]byte {
@@ -28,16 +30,32 @@ func GenerateNICSpecificBytes() *[3]byte {
     return &nicSpecificBytes
 }
 
-func GenerateMACAddress(local bool) *MACAddress {
+func GenerateMACAddress(local bool, individual bool) *MACAddress {
     oui := GenerateOUI()
     if local == true {
         oui[0] = oui[0] | localScopeBitmask
     } else {
         oui[0] = oui[0] & universalScopeBitmask
     }
+    if individual == true {
+        oui[0] = oui[0] & unicastBitmask
+    } else {
+        oui[0] = oui[0] | multicastBitmask
+    }
     nicSpecificBytes := GenerateNICSpecificBytes()
     address := MACAddress{oui[0], oui[1], oui[2], nicSpecificBytes[0], nicSpecificBytes[1], nicSpecificBytes[2]}
     return &address
+}
+
+func CheckAddressType(addressType string) (bool, error) {
+    switch addressType {
+    case "individual", "i":
+        return true, nil
+    case "group", "g":
+        return false, nil
+    default:
+        return false, errors.New("Unrecognised address type.")
+    }
 }
 
 func CheckAddressScope(scope string) (bool, error) {
