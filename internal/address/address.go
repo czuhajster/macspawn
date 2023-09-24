@@ -35,14 +35,14 @@ func GenerateNICSpecificBytes() *[3]byte {
 func GenerateMACAddress(local bool, individual bool) *MACAddress {
     oui := GenerateOUI()
     if local == true {
-        oui[0] = oui[0] | localScopeBitmask
+        oui[0] |= localScopeBitmask
     } else {
-        oui[0] = oui[0] & universalScopeBitmask
+        oui[0] &= universalScopeBitmask
     }
     if individual == true {
-        oui[0] = oui[0] & unicastBitmask
+        oui[0] &= unicastBitmask
     } else {
-        oui[0] = oui[0] | multicastBitmask
+        oui[0] |= multicastBitmask
     }
     nicSpecificBytes := GenerateNICSpecificBytes()
     address := MACAddress{oui[0], oui[1], oui[2], nicSpecificBytes[0], nicSpecificBytes[1], nicSpecificBytes[2]}
