@@ -9,6 +9,7 @@ import (
 
 var (
     separator string
+    scope string
     rootCmd = &cobra.Command{
       Use:   "macspawn",
       Short: "MACSpawn is a MAC address generator.",
@@ -17,7 +18,11 @@ var (
           if e != nil {
               return e
           }
-          address := address.GenerateMACAddress()
+          local, scopeError  := address.CheckAddressScope(scope)
+          if scopeError != nil {
+              return scopeError
+          }
+          address := address.GenerateMACAddress(local)
           format.PrintMAC(address, addressFormat)
           return nil
       },
@@ -26,6 +31,7 @@ var (
 
 func init() {
     rootCmd.Flags().StringVarP(&separator, "separator", "s", ":", "Separator of the address bytes.")
+    rootCmd.Flags().StringVarP(&scope, "scope", "c", "local", "Scope of the MAC address: local or universal.")
 }
 
 func Execute() error {
