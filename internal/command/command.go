@@ -25,7 +25,7 @@ var (
 )
 
 func init() {
-    rootCmd.Flags().StringVar(&separator, "separator", ":", "Separator of the address bytes.")
+    rootCmd.Flags().StringVarP(&separator, "separator", "s", ":", "Separator of the address bytes.")
 }
 
 func Execute() error {
