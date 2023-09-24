@@ -1,7 +1,7 @@
 package address
 
 import (
-    "math/rand"
+    "crypto/rand"
     "errors"
 )
 
@@ -15,17 +15,19 @@ const (
 )
 
 func GenerateOUI() *[3]byte {
-    var OUI [3]byte
-    for i := 0; i < 3; i++ {
-        OUI[i] = byte(rand.Intn(255))
+    var oui [3]byte
+    _, err := rand.Read(oui[:])
+    if err != nil {
+        panic(err)
     }
-    return &OUI
+    return &oui
 }
 
 func GenerateNICSpecificBytes() *[3]byte {
     var nicSpecificBytes [3]byte
-    for i := 0; i < 3; i++ {
-        nicSpecificBytes[i] = byte(rand.Intn(255))
+    _, err := rand.Read(nicSpecificBytes[:])
+    if err != nil {
+        panic(err)
     }
     return &nicSpecificBytes
 }
