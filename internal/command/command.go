@@ -1,8 +1,6 @@
 package command
 
 import (
-    "errors"
-
     "github.com/spf13/cobra"
 
     "github.com/czuhajster/macspawn/internal/address"
@@ -15,13 +13,12 @@ var (
       Use:   "macspawn",
       Short: "MACSpawn is a MAC address generator.",
       RunE: func(cmd *cobra.Command, args []string) error {
-          switch separator {
-          case ":", "-":
-          default:
-              return errors.New("Invalid separator.")
+          addressFormat, e := format.GetFormat(separator)
+          if e != nil {
+              return e
           }
           address := address.GenerateMACAddress()
-          format.PrintMAC(address, format.ColonFormat)
+          format.PrintMAC(address, addressFormat)
           return nil
       },
     }

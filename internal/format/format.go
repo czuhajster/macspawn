@@ -2,6 +2,7 @@ package format
 
 import (
     "fmt"
+    "errors"
     "github.com/czuhajster/macspawn/internal/address"
 )
 
@@ -15,4 +16,15 @@ const (
 
 func PrintMAC(x *address.MACAddress, format macAddressFormat) {
     fmt.Printf(string(format), x[0], x[1], x[2], x[3], x[4], x[5])
+}
+
+func GetFormat(separator string) (macAddressFormat, error) {
+    switch separator {
+    case ":":
+        return ColonFormat, nil
+    case "-":
+        return HyphenFormat, nil
+    default:
+        return "", errors.New("Invalid separator.")
+  }
 }
