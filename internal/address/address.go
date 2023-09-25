@@ -14,13 +14,13 @@ const (
     multicastBitmask byte = 1
 )
 
-func GenerateOUI() *[3]byte {
-    var oui [3]byte
-    _, err := rand.Read(oui[:])
+func GenerateIdentifier() *[3]byte {
+    var identifier [3]byte
+    _, err := rand.Read(identifier[:])
     if err != nil {
         panic(err)
     }
-    return &oui
+    return &identifier
 }
 
 func GenerateNICSpecificBytes() *[3]byte {
@@ -33,19 +33,19 @@ func GenerateNICSpecificBytes() *[3]byte {
 }
 
 func GenerateMACAddress(local bool, individual bool) *MACAddress {
-    oui := GenerateOUI()
+    identifier := GenerateOUI()
     if local == true {
-        oui[0] |= localScopeBitmask
+        identifier[0] |= localScopeBitmask
     } else {
-        oui[0] &= universalScopeBitmask
+        identifier[0] &= universalScopeBitmask
     }
     if individual == true {
-        oui[0] &= unicastBitmask
+        identifier[0] &= unicastBitmask
     } else {
-        oui[0] |= multicastBitmask
+        identifier[0] |= multicastBitmask
     }
     nicSpecificBytes := GenerateNICSpecificBytes()
-    address := MACAddress{oui[0], oui[1], oui[2], nicSpecificBytes[0], nicSpecificBytes[1], nicSpecificBytes[2]}
+    address := MACAddress{identifier[0], identifier[1], identifier[2], nicSpecificBytes[0], nicSpecificBytes[1], nicSpecificBytes[2]}
     return &address
 }
 
