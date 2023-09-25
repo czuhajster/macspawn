@@ -33,7 +33,7 @@ func GenerateNICSpecificBytes() *[3]byte {
 }
 
 func GenerateMACAddress(local bool, individual bool) *MACAddress {
-    identifier := GenerateOUI()
+    identifier := GenerateIdentifier()
     if local == true {
         identifier[0] |= localScopeBitmask
     } else {
