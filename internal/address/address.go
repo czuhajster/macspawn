@@ -16,7 +16,6 @@ const (
 )
 
 func GenerateIdentifier(lengthBits uint8) []byte {
-    remainingBits := 8 - (lengthBits % 8)
 	lengthBytes := uint8(math.Ceil(float64(lengthBits) / 8))
 	var identifier []byte
 	identifier = make([]byte, lengthBytes)
@@ -24,7 +23,8 @@ func GenerateIdentifier(lengthBits uint8) []byte {
 	if err != nil {
 		panic(err)
 	}
-    if remainingBits > 0 {
+    if lengthBits % 8 > 0 {
+        remainingBits := 8 - (lengthBits % 8)
         bitmask := GenerateBitmask(remainingBits, false)
         identifier[len(identifier)-1] &= bitmask
     }
@@ -32,7 +32,6 @@ func GenerateIdentifier(lengthBits uint8) []byte {
 }
 
 func GenerateNICSpecificBytes(lengthBits uint8) []byte {
-    remainingBits := 8 - (lengthBits % 8)
 	lengthBytes := uint8(math.Ceil(float64(lengthBits) / 8))
 	var nicSpecificBytes []byte
 	nicSpecificBytes = make([]byte, lengthBytes)
@@ -40,7 +39,8 @@ func GenerateNICSpecificBytes(lengthBits uint8) []byte {
 	if err != nil {
 		panic(err)
 	}
-    if remainingBits > 0 {
+    if lengthBits % 8 > 0 {
+        remainingBits := 8 - (lengthBits % 8)
         bitmask := GenerateBitmask(remainingBits, true)
         nicSpecificBytes[0] &= bitmask
     }
