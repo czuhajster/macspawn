@@ -42,7 +42,7 @@ func GenerateNICSpecificBytes(lengthBits uint8) []byte {
 	}
     if remainingBits > 0 {
         bitmask := GenerateBitmask(remainingBits, true)
-        nicSpecificBytes[len(nicSpecificBytes)-1] &= bitmask
+        nicSpecificBytes[0] &= bitmask
     }
 	return nicSpecificBytes
 }
