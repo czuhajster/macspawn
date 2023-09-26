@@ -67,10 +67,10 @@ func GenerateMACAddress(local bool, individual bool) *MACAddress {
 
 func GenerateBitmask(shifts uint8, reverse bool) byte {
     var bitmask byte = 255
-    if !reverse {
-        bitmask <<= shifts
-    } else {
+    if reverse {
         bitmask >>= shifts
+    } else {
+        bitmask <<= shifts
     }
     return bitmask
 }
