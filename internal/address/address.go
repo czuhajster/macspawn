@@ -3,6 +3,7 @@ package address
 import (
 	"crypto/rand"
 	"errors"
+	"math"
 )
 
 type MACAddress [6]byte
@@ -14,10 +15,11 @@ const (
 	multicastBitmask      byte = 1
 )
 
-func GenerateIdentifier(length uint8) []byte {
-    remainingBits := 8 - (length % 8)
+func GenerateIdentifier(lengthBits uint8) []byte {
+    remainingBits := 8 - (lengthBits % 8)
+	lengthBytes := uint8(math.Ceil(float64(lengthBits) / 8))
 	var identifier []byte
-	identifier = make([]byte, length + remainingBits)
+	identifier = make([]byte, lengthBytes)
 	_, err := rand.Read(identifier)
 	if err != nil {
 		panic(err)
@@ -29,10 +31,11 @@ func GenerateIdentifier(length uint8) []byte {
 	return identifier
 }
 
-func GenerateNICSpecificBytes(length uint8) []byte {
-    remainingBits := 8 - (length % 8)
+func GenerateNICSpecificBytes(lengthBits uint8) []byte {
+    remainingBits := 8 - (lengthBits % 8)
+	lengthBytes := uint8(math.Ceil(float64(lengthBits) / 8))
 	var nicSpecificBytes []byte
-	nicSpecificBytes = make([]byte, length + remainingBits)
+	nicSpecificBytes = make([]byte, lengthBytes)
 	_, err := rand.Read(nicSpecificBytes)
 	if err != nil {
 		panic(err)
