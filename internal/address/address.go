@@ -55,12 +55,14 @@ func GenerateNICSpecificBytes(lengthBits uint8) []byte {
 
 func GenerateMACAddress(options *MACAddressOptions) *MACAddress {
 	var identifierLength uint8
+	var identifier []byte
 	if options.identifier != nil {
 		identifierLength = uint8(len(options.identifier))
+		identifier = options.identifier
 	} else {
 		identifierLength = 24
+		identifier = GenerateIdentifier(identifierLength)
 	}
-	identifier := GenerateIdentifier(identifierLength)
 	if options.local == true {
 		identifier[0] |= localScopeBitmask
 	} else {
