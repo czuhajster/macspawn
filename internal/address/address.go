@@ -9,9 +9,9 @@ import (
 type MACAddress [6]byte
 
 type MACAddressOptions struct {
-    local bool
-    individual bool
-    identifier []byte
+	local      bool
+	individual bool
+	identifier []byte
 }
 
 const (
@@ -29,11 +29,11 @@ func GenerateIdentifier(lengthBits uint8) []byte {
 	if err != nil {
 		panic(err)
 	}
-    if lengthBits % 8 > 0 {
-        remainingBits := 8 - (lengthBits % 8)
-        bitmask := GenerateBitmask(remainingBits, false)
-        identifier[len(identifier)-1] &= bitmask
-    }
+	if lengthBits%8 > 0 {
+		remainingBits := 8 - (lengthBits % 8)
+		bitmask := GenerateBitmask(remainingBits, false)
+		identifier[len(identifier)-1] &= bitmask
+	}
 	return identifier
 }
 
@@ -45,21 +45,21 @@ func GenerateNICSpecificBytes(lengthBits uint8) []byte {
 	if err != nil {
 		panic(err)
 	}
-    if lengthBits % 8 > 0 {
-        remainingBits := 8 - (lengthBits % 8)
-        bitmask := GenerateBitmask(remainingBits, true)
-        nicSpecificBytes[0] &= bitmask
-    }
+	if lengthBits%8 > 0 {
+		remainingBits := 8 - (lengthBits % 8)
+		bitmask := GenerateBitmask(remainingBits, true)
+		nicSpecificBytes[0] &= bitmask
+	}
 	return nicSpecificBytes
 }
 
 func GenerateMACAddress(options *MACAddressOptions) *MACAddress {
-    var identifierLength uint8
-    if options.identifier != nil {
-        identifierLength = uint8(len(options.identifier))
-    } else {
-        identifierLength = 24
-    }
+	var identifierLength uint8
+	if options.identifier != nil {
+		identifierLength = uint8(len(options.identifier))
+	} else {
+		identifierLength = 24
+	}
 	identifier := GenerateIdentifier(identifierLength)
 	if options.local == true {
 		identifier[0] |= localScopeBitmask
@@ -77,22 +77,22 @@ func GenerateMACAddress(options *MACAddressOptions) *MACAddress {
 }
 
 func GenerateBitmask(shifts uint8, reverse bool) byte {
-    var bitmask byte = 255
-    if reverse {
-        bitmask >>= shifts
-    } else {
-        bitmask <<= shifts
-    }
-    return bitmask
+	var bitmask byte = 255
+	if reverse {
+		bitmask >>= shifts
+	} else {
+		bitmask <<= shifts
+	}
+	return bitmask
 }
 
 func NewMACAddressOptions(local bool, individual bool, identifier []byte) *MACAddressOptions {
-    options := MACAddressOptions{
-        local: local,
-        individual: individual,
-        identifier: identifier,
-    }
-    return &options
+	options := MACAddressOptions{
+		local:      local,
+		individual: individual,
+		identifier: identifier,
+	}
+	return &options
 }
 
 func CheckAddressType(addressType string) (bool, error) {
