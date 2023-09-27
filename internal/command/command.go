@@ -27,7 +27,9 @@ var (
           if typeError != nil {
               return typeError
           }
-          address := address.GenerateMACAddress(local, individual)
+          var identifier []byte
+          options := address.NewMACAddressOptions(local, individual, identifier)
+          address := address.GenerateMACAddress(options)
           format.PrintMAC(address, addressFormat)
           return nil
       },

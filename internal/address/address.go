@@ -8,6 +8,12 @@ import (
 
 type MACAddress [6]byte
 
+type MACAddressOptions struct {
+    local bool
+    individual bool
+    identifier []byte
+}
+
 const (
 	localScopeBitmask     byte = 2
 	universalScopeBitmask byte = 253
@@ -47,15 +53,20 @@ func GenerateNICSpecificBytes(lengthBits uint8) []byte {
 	return nicSpecificBytes
 }
 
-func GenerateMACAddress(local bool, individual bool) *MACAddress {
-    var identifierLength uint8 = 24
+func GenerateMACAddress(options *MACAddressOptions) *MACAddress {
+    var identifierLength uint8
+    if options.identifier != nil {
+        identifierLength = uint8(len(options.identifier))
+    } else {
+        identifierLength = 24
+    }
 	identifier := GenerateIdentifier(identifierLength)
-	if local == true {
+	if options.local == true {
 		identifier[0] |= localScopeBitmask
 	} else {
 		identifier[0] &= universalScopeBitmask
 	}
-	if individual == true {
+	if options.individual == true {
 		identifier[0] &= unicastBitmask
 	} else {
 		identifier[0] |= multicastBitmask
@@ -73,6 +84,15 @@ func GenerateBitmask(shifts uint8, reverse bool) byte {
         bitmask <<= shifts
     }
     return bitmask
+}
+
+func NewMACAddressOptions(local bool, individual bool, identifier []byte) *MACAddressOptions {
+    options := MACAddressOptions{
+        local: local,
+        individual: individual,
+        identifier: identifier,
+    }
+    return &options
 }
 
 func CheckAddressType(addressType string) (bool, error) {
