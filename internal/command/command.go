@@ -1,9 +1,7 @@
 package command
 
 import (
-	"encoding/hex"
 	"errors"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -39,8 +37,7 @@ var (
 			if !validIdentifier {
 				return errors.New("Invalid identifier.")
 			}
-			identifierString = strings.ReplaceAll(identifierString, ":", "")
-			identifier, identifierError := hex.DecodeString(identifierString)
+			identifier, identifierError := processIdentifier(identifierString)
 			if identifierError != nil {
 				return errors.New("Invalid identifier.")
 			}
