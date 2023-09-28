@@ -11,6 +11,9 @@ func processIdentifier(identifierString string) ([]byte, error) {
 		return nil, err
 	}
 	identifierString = re.ReplaceAllString(identifierString, "")
+	if len(identifierString)%2 != 0 {
+		identifierString += "0"
+	}
 	identifier, identifierError := hex.DecodeString(identifierString)
 	if identifierError != nil {
 		return identifier, identifierError
