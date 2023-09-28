@@ -1,6 +1,10 @@
 package command
 
 import (
+	"encoding/hex"
+	"errors"
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/czuhajster/macspawn/internal/address"
@@ -8,10 +12,11 @@ import (
 )
 
 var (
-	separator   string
-	scope       string
-	addressType string
-	rootCmd     = &cobra.Command{
+	separator        string
+	scope            string
+	addressType      string
+	identifierString string
+	rootCmd          = &cobra.Command{
 		Use:   "macspawn",
 		Short: "MACSpawn is a MAC address generator.",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -27,7 +32,18 @@ var (
 			if typeError != nil {
 				return typeError
 			}
-			var identifier []byte
+			validIdentifier, validationErr := validateIdentifierFlag(identifierString)
+			if validationErr != nil {
+				return validationErr
+			}
+			if !validIdentifier {
+				return errors.New("Invalid identifier.")
+			}
+			identifierString = strings.ReplaceAll(identifierString, ":", "")
+			identifier, identifierError := hex.DecodeString(identifierString)
+			if identifierError != nil {
+				return errors.New("Invalid identifier.")
+			}
 			options := address.NewMACAddressOptions(local, individual, identifier)
 			address := address.GenerateMACAddress(options)
 			format.PrintMAC(address, addressFormat)
@@ -40,6 +56,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&separator, "separator", "s", ":", "Separator of the address bytes.")
 	rootCmd.Flags().StringVarP(&scope, "scope", "c", "local", "Scope of the MAC address: local or universal.")
 	rootCmd.Flags().StringVarP(&addressType, "type", "t", "individual", "Type of the MAC address: individual or group.")
+	rootCmd.Flags().StringVarP(&identifierString, "identifier", "i", "", "Identifier. A 24- (MA-L), 28- (MA-M), or 36-bit (MA-S) hex number.")
 }
 
 func Execute() error {
