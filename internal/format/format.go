@@ -3,6 +3,7 @@ package format
 import (
 	"errors"
 	"fmt"
+
 	"github.com/czuhajster/macspawn/internal/address"
 )
 
