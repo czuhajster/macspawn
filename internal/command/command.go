@@ -49,7 +49,7 @@ var (
 				record := registry.FindRecord(registryFile, name)
 				if record != nil {
 					var err error
-					identifier, err = processIdentifier(record[2])
+					identifier, err = processIdentifier(record[1])
 					if err != nil {
 						return err
 					}
