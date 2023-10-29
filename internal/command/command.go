@@ -7,6 +7,7 @@ import (
 
 	"github.com/czuhajster/macspawn/internal/address"
 	"github.com/czuhajster/macspawn/internal/format"
+	"github.com/czuhajster/macspawn/internal/registry"
 )
 
 var (
@@ -15,6 +16,8 @@ var (
 	addressType      string
 	identifierString string
 	macAddress       string
+	registryFile     string
+	name             string
 	rootCmd          = &cobra.Command{
 		Use:   "macspawn",
 		Short: "MACSpawn is a MAC address generator.",
@@ -42,6 +45,16 @@ var (
 			if identifierError != nil {
 				return errors.New("Invalid identifier.")
 			}
+			if len(registryFile) > 0 && len(name) > 0 {
+				record := registry.FindRecord(registryFile, name)
+				if record != nil {
+					var err error
+					identifier, err = processIdentifier(record[2])
+					if err != nil {
+						return err
+					}
+				}
+			}
 			options := address.NewMACAddressOptions(local, individual, identifier)
 			address := address.GenerateMACAddress(options)
 			format.PrintMAC(address, addressFormat)
@@ -56,6 +69,8 @@ func init() {
 	rootCmd.Flags().StringVarP(&addressType, "type", "t", "individual", "Type of the MAC address: individual or group.")
 	rootCmd.Flags().StringVarP(&identifierString, "identifier", "i", "", "Identifier. A 24- (MA-L), 28- (MA-M), or 36-bit (MA-S) hex number.")
 	rootCmd.Flags().StringVarP(&macAddress, "mac-address", "m", "", "MAC Address. Used to generate an EUI-64 identifier.")
+	rootCmd.Flags().StringVarP(&registryFile, "file", "f", "", "Registry file.")
+	rootCmd.Flags().StringVarP(&name, "name", "n", "", "Company name.")
 }
 
 func Execute() error {
