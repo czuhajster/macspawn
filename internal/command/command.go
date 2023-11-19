@@ -22,6 +22,8 @@ var (
 		Use:   "macspawn",
 		Short: "MACSpawn is a MAC address generator.",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			var identifier []byte = nil
+			var identifierError error
 			addressFormat, e := format.GetFormat(separator)
 			if e != nil {
 				return e
@@ -34,16 +36,20 @@ var (
 			if typeError != nil {
 				return typeError
 			}
-			validIdentifier, validationErr := validateIdentifierFlag(identifierString)
-			if validationErr != nil {
-				return validationErr
-			}
-			if !validIdentifier {
-				return errors.New("Invalid identifier.")
-			}
-			identifier, identifierError := processIdentifier(identifierString)
-			if identifierError != nil {
-				return errors.New("Invalid identifier.")
+
+			identifierSet := cmd.Flags().Lookup("identifier").Changed
+			if identifierSet {
+				validIdentifier, validationErr := validateIdentifierFlag(identifierString)
+				if validationErr != nil {
+					return validationErr
+				}
+				if !validIdentifier {
+					return errors.New("Invalid identifier.")
+				}
+				identifier, identifierError = processIdentifier(identifierString)
+				if identifierError != nil {
+					return errors.New("Invalid identifier.")
+				}
 			}
 			if len(registryFile) > 0 && len(name) > 0 {
 				record := registry.FindRecord(registryFile, name)
